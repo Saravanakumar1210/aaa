@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Contact Form</title>
+    <script type="module">
+      // Import Firebase modules
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDmoxiiUENzkGMQhEnCzUt9s1YIqKlQBB8",
+        authDomain: "example-75411.firebaseapp.com",
+        projectId: "example-75411",
+        storageBucket: "example-75411.firebasestorage.app",
+        messagingSenderId: "157410608114",
+        appId: "1:157410608114:web:d55546f6441c8af1d2616b"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      window.submitForm = async () => {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+
+        try {
+          await addDoc(collection(db, "messages"), {
+            name,
+            email,
+            message,
+            timestamp: serverTimestamp()
+          });
+          alert("Message sent to Firebase!");
+          document.getElementById("contact-form").reset();
+        } catch (e) {
+          console.error("Error adding document: ", e);
+          alert("Failed to send. Check console.");
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <h2>Contact Us</h2>
+    <form id="contact-form" onsubmit="event.preventDefault(); submitForm();">
+      <input type="text" id="name" placeholder="Name" required /><br />
+      <input type="email" id="email" placeholder="Email" required /><br />
+      <textarea id="message" placeholder="Your Message" required></textarea><br />
+      <button type="submit">Send</button>
+    </form>
+  </body>
+</html>
