@@ -1,52 +1,67 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Contact Form</title>
-    <script type="module">
-      // Import Firebase modules
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-      import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+<head>
+  <title>Contact Form</title>
+  <meta charset="UTF-8" />
+</head>
+<body>
+  <h2>Contact Form</h2>
+  <form id="contactForm">
+    <label>Name:</label><br>
+    <input type="text" id="name" required><br><br>
+    
+    <label>Email:</label><br>
+    <input type="email" id="email" required><br><br>
+    
+    <label>Message:</label><br>
+    <textarea id="message" required></textarea><br><br>
+    
+    <button type="submit">Send</button>
+  </form>
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyDmoxiiUENzkGMQhEnCzUt9s1YIqKlQBB8",
-        authDomain: "example-75411.firebaseapp.com",
-        projectId: "example-75411",
-        storageBucket: "example-75411.firebasestorage.app",
-        messagingSenderId: "157410608114",
-        appId: "1:157410608114:web:d55546f6441c8af1d2616b"
-      };
+  <!-- Firebase App -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDmoxiiUENzkGMQhEnCzUt9s1YIqKlQBB8",
+      authDomain: "example-75411.firebaseapp.com",
+      projectId: "example-75411",
+      storageBucket: "example-75411.appspot.com",
+      messagingSenderId: "157410608114",
+      appId: "1:157410608114:web:d55546f6441c8af1d2616b"
+    };
 
-      window.submitForm = async () => {
-        const name = document.getElementById("name").value;
-        const email = document.getElementById("email").value;
-        const message = document.getElementById("message").value;
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-        try {
-          await addDoc(collection(db, "messages"), {
-            name,
-            email,
-            message,
-            timestamp: serverTimestamp()
-          });
-          alert("Message sent to Firebase!");
-          document.getElementById("contact-form").reset();
-        } catch (e) {
-          console.error("Error adding document: ", e);
-          alert("Failed to send. Check console.");
-        }
-      };
-    </script>
-  </head>
-  <body>
-    <h2>Contact Us</h2>
-    <form id="contact-form" onsubmit="event.preventDefault(); submitForm();">
-      <input type="text" id="name" placeholder="Name" required /><br />
-      <input type="email" id="email" placeholder="Email" required /><br />
-      <textarea id="message" placeholder="Your Message" required></textarea><br />
-      <button type="submit">Send</button>
-    </form>
-  </body>
+    // Form submission handler
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      db.collection("messages").add({
+        name: name,
+        email: email,
+        message: message,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then(() => {
+        alert("✅ Message sent to Firebase!");
+        document.getElementById("contactForm").reset();
+      })
+      .catch((error) => {
+        console.error("❌ Error writing document: ", error);
+        alert("Failed to send message.");
+      });
+    });
+  </script>
+</body>
 </html>
