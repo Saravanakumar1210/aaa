@@ -13,11 +13,12 @@
     <button type="submit">Send</button>
   </form>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDKs (must be compat version) -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
   <script>
+    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyDmoxiiUENzkGMQhEnCzUt9s1YIqKlQBB8",
       authDomain: "example-75411.firebaseapp.com",
@@ -30,9 +31,9 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    document.getElementById("contactForm").addEventListener("submit", function(e) {
+    // Submit handler
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
       e.preventDefault();
-
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const message = document.getElementById("message").value.trim();
@@ -44,12 +45,12 @@
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
       })
       .then(() => {
-        alert("✅ Message sent to Firebase!");
+        alert("✅ Message sent successfully!");
         document.getElementById("contactForm").reset();
       })
       .catch((error) => {
         console.error("❌ Firestore Error: ", error);
-        alert("Message not sent.");
+        alert("Error sending message.");
       });
     });
   </script>
